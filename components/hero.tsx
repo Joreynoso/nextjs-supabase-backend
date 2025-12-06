@@ -1,44 +1,32 @@
+import Link from 'next/link';
 import { NextLogo } from "./next-logo";
 import { SupabaseLogo } from "./supabase-logo";
+import { Button } from './ui/button';
+import { Badge } from './ui/badge';
 
 export function Hero() {
   return (
-    <div className="flex flex-col gap-16 items-center">
-      <div className="flex gap-8 justify-center items-center">
-        <a
-          href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-          target="_blank"
-          rel="noreferrer"
-        >
-          <SupabaseLogo />
-        </a>
-        <span className="border-l rotate-45 h-6" />
-        <a href="https://nextjs.org/" target="_blank" rel="noreferrer">
-          <NextLogo />
-        </a>
-      </div>
-      <h1 className="sr-only">Supabase and Next.js Starter Template</h1>
-      <p className="text-3xl lg:text-4xl !leading-tight mx-auto max-w-xl text-center">
-        The fastest way to build apps with{" "}
-        <a
-          href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-          target="_blank"
-          className="font-bold hover:underline"
-          rel="noreferrer"
-        >
-          Supabase
-        </a>{" "}
-        and{" "}
-        <a
-          href="https://nextjs.org/"
-          target="_blank"
-          className="font-bold hover:underline"
-          rel="noreferrer"
-        >
-          Next.js
-        </a>
+    <div className="flex flex-col min-h-[calc(100vh-5rem)] items-center justify-center font-sans bg-background">
+      <Badge variant={'outline'} className='mb-4'>Autenticación con Supabase y Next.js</Badge>
+      <h1 className='max-w-5xl text-center text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-semibold tracking-tight text-foreground mb-8 leading-[1.1]'>
+        <span className="text-primary">Supabase</span> como backend para tu app Next.js
+      </h1>
+
+      <p className='max-w-2xl text-center text-base sm:text-lg md:text-xl text-muted-foreground mb-12 leading-relaxed font-medium'>
+        Regístrate para probar un sistema de autenticación robusto y escalable, impulsado por Supabase y Next.js.
       </p>
-      <div className="w-full p-[1px] bg-gradient-to-r from-transparent via-foreground/10 to-transparent my-8" />
+
+      <div className='flex flex-col sm:flex-row gap-4'>
+        {/* registarse */}
+        <Button variant="default" size="lg" className="text-base font-semibold min-w-[160px]">
+          <Link href="/auth/sign-up">Registrarse</Link>
+        </Button>
+
+        {/* iniciar sesión */}
+        <Button variant="outline" size="lg" className="text-base font-semibold min-w-[160px]">
+          <Link href="/auth/login">Iniciar sesión</Link>
+        </Button>
+      </div>
     </div>
   );
 }

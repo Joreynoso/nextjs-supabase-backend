@@ -9,3 +9,10 @@ export function cn(...inputs: ClassValue[]) {
 export const hasEnvVars =
   process.env.NEXT_PUBLIC_SUPABASE_URL &&
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+
+// Función para obtener las iniciales de un email
+export function getInitials(email: string) {
+  const name = email.split("@")[0];
+  return name.charAt(0).toUpperCase();
+}
