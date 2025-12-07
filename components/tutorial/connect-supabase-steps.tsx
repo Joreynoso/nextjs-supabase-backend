@@ -3,7 +3,7 @@ import { TutorialStep } from "./tutorial-step";
 export function ConnectSupabaseSteps() {
   return (
     <ol className="flex flex-col gap-6">
-      <TutorialStep title="Create Supabase project">
+      <TutorialStep title="Crear proyecto Supabase">
         <p>
           Head over to{" "}
           <a
