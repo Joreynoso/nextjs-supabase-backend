@@ -18,6 +18,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
       position='top-center'
+      closeButton={true}
       icons={{
         success: <CircleCheckIcon className="size-4" />,
         info: <InfoIcon className="size-4" />,
@@ -31,6 +32,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
           description: "text-muted-foreground",
           actionButton: "bg-primary text-primary-foreground hover:bg-primary/90",
           cancelButton: "bg-muted text-muted-foreground hover:bg-muted/80",
+          closeButton: "bg-card text-card-foreground border-border hover:bg-muted/50",
           success: "bg-card text-card-foreground border-border",
           error: "bg-card text-card-foreground border-border",
           warning: "bg-card text-card-foreground border-border",
