@@ -26,7 +26,6 @@ export default function Navbar() {
                 ) : (
                     // Suspense para manejar la carga asíncrona del AuthButton
                     <Suspense>
-                        
                         {/* Botón de autenticación para iniciar sesión/cerrar sesión */}
                         <AuthButton />
                     </Suspense>

@@ -11,6 +11,8 @@ export async function AuthButton() {
 
   const user = data?.claims;
 
+  console.log('user', user)
+
   return user ? (
     <div className="flex items-center gap-4">
       Hey, {user.email}!
@@ -18,11 +20,11 @@ export async function AuthButton() {
     </div>
   ) : (
     <div className="flex gap-2">
-      <Button asChild size="sm" variant={"outline"}>
-        <Link href="/auth/login">Sign in</Link>
+      <Button asChild size="default" variant={"outline"}>
+        <Link href="/auth/login">Iniciar sesión</Link>
       </Button>
-      <Button asChild size="sm" variant={"default"}>
-        <Link href="/auth/sign-up">Sign up</Link>
+      <Button asChild size="default" variant={"default"}>
+        <Link href="/auth/sign-up">Registrarse</Link>
       </Button>
     </div>
   );
