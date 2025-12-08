@@ -13,5 +13,5 @@ export function LogoutButton() {
     router.push("/");
   };
 
-  return <Button onClick={logout}>Cerrar sesión</Button>;
+  return <Button size={'sm'} onClick={logout}>Cerrar sesión</Button>;
 }

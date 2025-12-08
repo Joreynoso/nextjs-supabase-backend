@@ -1,22 +1,17 @@
-// ejemplo con renderizado en el servidor
-import { createClient } from '@/lib/supabase/server'
-import type { Instrument } from '@/types'
+// Este componente ya NO es async - se renderiza inmediatamente
+import InstrumentsContent from '@/components/instruments/InstrumentsContent';
 import { Suspense } from "react";
-import InstrumentsList from '@/components/instrumentsList'
+import Loading from '@/components/loading';
 
-export default async function PageInstruments() {
-  const supabase = await createClient()
-  const { data: instruments }  = await supabase.from('instruments').select()
 
+export default function PageInstruments() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-    <div className='w-full max-w-5xl min-h-[calc(100vh-120px)] flex flex-col p-3 px-5 text-sm mx-auto py-10'>
-      {/* Header section */}
-      <h1 className='text-2xl font-bold'>Instruments</h1>
-      <p className='text-sm text-muted-foreground mb-10'>Your instruments, this section has a private policy from supabase.</p>
-
-      <InstrumentsList instruments={instruments as Instrument[]} />
-    </div>
+    <Suspense fallback={
+      <div className='w-full max-w-5xl min-h-[calc(100vh-120px)] flex flex-col p-3 px-5 text-sm mx-auto py-10'>
+        <Loading message="Loading instruments..." />
+      </div>
+    }>
+      <InstrumentsContent />
     </Suspense>
   )
 }

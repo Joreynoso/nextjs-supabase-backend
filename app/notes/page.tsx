@@ -9,11 +9,13 @@ import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
 
 import { Trash, Pencil } from 'lucide-react'
+import Loading from '@/components/loading'
 
 export default function Page() {
     const [notes, setNotes] = useState<Note[] | null>(null)
     const [newNote, setNewNote] = useState('')
     const [loading, setLoading] = useState(false)
+    const [loadingNotes, setLoadingNotes] = useState(false)
     const supabase = createClient()
 
     useEffect(() => {
@@ -21,8 +23,10 @@ export default function Page() {
     }, [])
 
     const getData = async () => {
+        setLoadingNotes(true)
         const { data } = await supabase.from('notes').select()
         setNotes(data)
+        setLoadingNotes(false)
     }
 
     // Handle submit
@@ -86,23 +90,27 @@ export default function Page() {
             </form>
 
             {/* Notes section */}
-            <div className='w-full max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-                {notes?.map((note: Note): JSX.Element => (
-                    <Card key={note.id} className='bg-card rounded-xl shadow-lg flex flex-col justify-between overflow-hidden transition-all hover:shadow-xl'>
-                        <CardHeader className='pb-4'>
-                            <CardTitle className='text-lg font-semibold leading-snug'>{note.title}</CardTitle>
-                        </CardHeader>
-                        <CardFooter className='flex justify-end pt-2'>
-                            <Button variant='ghost' size='icon' className='mr-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'>
-                                <Trash className='h-4 w-4' />
-                            </Button>
-                            <Button variant='ghost' size='icon' className='text-muted-foreground hover:bg-primary/10 hover:text-primary'>
-                                <Pencil className='h-4 w-4' />
-                            </Button>
-                        </CardFooter>
-                    </Card>
-                ))}
-            </div>
-        </div>
+            {loadingNotes ? (
+                <Loading message="Loading notes..." />
+            ) : (
+                <div className='w-full max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+                    {notes?.map((note: Note): JSX.Element => (
+                        <Card key={note.id} className='bg-card rounded-xl shadow-lg flex flex-col justify-between overflow-hidden transition-all hover:shadow-xl'>
+                            <CardHeader className='pb-4'>
+                                <CardTitle className='text-lg font-semibold leading-snug'>{note.title}</CardTitle>
+                            </CardHeader>
+                            <CardFooter className='flex justify-end pt-2'>
+                                <Button variant='ghost' size='icon' className='mr-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'>
+                                    <Trash className='h-4 w-4' />
+                                </Button>
+                                <Button variant='ghost' size='icon' className='text-muted-foreground hover:bg-primary/10 hover:text-primary'>
+                                    <Pencil className='h-4 w-4' />
+                                </Button>
+                            </CardFooter>
+                        </Card>
+                    ))}
+                </div>
+            )}
+        </div >
     )
 }

@@ -25,14 +25,14 @@ export function AuthButton() {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
-    });
+    })
 
     return () => subscription.unsubscribe();
   }, [supabase.auth]);
 
   return user ? (
-    <div className="flex items-center gap-4">
-      <Avatar className="h-9 w-9 ring-border">
+    <div className="flex items-center gap-2">
+      <Avatar className="h-8 w-8 ring-border">
         <AvatarImage src={user.email} />
         <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
       </Avatar>
