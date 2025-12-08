@@ -18,10 +18,7 @@ export default function Page() {
     const [loadingNotes, setLoadingNotes] = useState(false)
     const supabase = createClient()
 
-    useEffect(() => {
-        getData()
-    }, [])
-
+    // Get data
     const getData = async () => {
         setLoadingNotes(true)
         const { data } = await supabase.from('notes').select()
@@ -74,6 +71,11 @@ export default function Page() {
         toast.success('Note added successfully')
         getData()
     }
+
+    // Hanlde changes
+    useEffect(() => {
+        getData()
+    }, [])
 
     return (
         <div className='w-full max-w-5xl min-h-[calc(100vh-120px)] flex flex-col p-3 px-5 text-sm mx-auto py-10'>
