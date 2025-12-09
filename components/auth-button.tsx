@@ -32,10 +32,12 @@ export function AuthButton() {
 
   return user ? (
     <div className="flex items-center gap-2">
-      <Avatar className="h-8 w-8 ring-border">
-        <AvatarImage src={user.email} />
-        <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
-      </Avatar>
+      <Link href="/profile" className='h-8 w-8 ring-border'>
+        <Avatar className="h-8 w-8 ring-border">
+          <AvatarImage src={user.email} />
+          <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
+        </Avatar>
+      </Link>
       <LogoutButton />
     </div>
   ) : (
