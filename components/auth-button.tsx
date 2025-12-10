@@ -31,7 +31,7 @@ export function AuthButton() {
   }, [supabase.auth]);
 
   return user ? (
-    <div className="flex items-center gap-2">
+    <div className="flex gap-3">
       <Link href="/profile" className='h-8 w-8 ring-border'>
         <Avatar className="h-8 w-8 ring-border">
           <AvatarImage src={user.email} />
@@ -41,7 +41,7 @@ export function AuthButton() {
       <LogoutButton />
     </div>
   ) : (
-    <div className="flex gap-2">
+    <div className="flex gap-3  ">
       <Button asChild size="sm" variant={"outline"}>
         <Link href="/auth/login">Iniciar sesión</Link>
       </Button>

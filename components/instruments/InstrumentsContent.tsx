@@ -12,7 +12,7 @@ export default async function InstrumentsContent() {
     return (
         <div className='w-full max-w-5xl min-h-[calc(100vh-120px)] flex flex-col p-3 px-5 text-sm mx-auto py-10'>
             {/* Header section */}
-            <h1 className='text-3xl font-extrabold tracking-tight mb-2'>Instruments</h1>
+            <h1 className='text-3xl font-semibold tracking-tight mb-2'>Instruments</h1>
             <p className='text-muted-foreground text-base mb-8'>
                 Your personal space for instruments. This section is secured by Supabase's private policy.
             </p>

@@ -5,6 +5,7 @@ import "./globals.css";
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 import { Toaster } from '@/components/ui/sonner';
+import SizeScreenHelper from '@/components/size-screen-helper';
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -42,6 +43,9 @@ export default function RootLayout({
 
           {/* Toast */}
           <Toaster />
+
+          {/* Size screen helper */}
+          <SizeScreenHelper />
         </ThemeProvider>
       </body>
     </html>

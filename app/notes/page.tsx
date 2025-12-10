@@ -80,7 +80,7 @@ export default function Page() {
     return (
         <div className='w-full max-w-5xl min-h-[calc(100vh-120px)] flex flex-col p-3 px-5 text-sm mx-auto py-10'>
             {/* Header section */}
-            <h1 className='text-3xl font-extrabold tracking-tight mb-2'>Notes</h1>
+            <h1 className='text-3xl font-semibold tracking-tight mb-2'>Notes</h1>
             <p className='text-muted-foreground text-base mb-8'>Your personal space for thoughts. This section is secured by Supabase's private policy.</p>
 
             {/* form add a new note */}
