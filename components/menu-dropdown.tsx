@@ -48,6 +48,14 @@ export default function MenuDropdown() {
                     >
                         Notes
                     </Link>
+                    <Link
+                        href="/supabase-files"
+                        className="block px-3 py-2 text-sm rounded-sm hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
+                        role="menuitem"
+                        onClick={() => setOpen(false)}
+                    >
+                        Supabase Files
+                    </Link>
                 </div>
             )}
         </div>

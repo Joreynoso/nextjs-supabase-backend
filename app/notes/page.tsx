@@ -7,23 +7,28 @@ import type { Note } from '@/types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
-
 import { Trash, Pencil } from 'lucide-react'
-import Loading from '@/components/loading'
 
 export default function Page() {
     const [notes, setNotes] = useState<Note[] | null>(null)
     const [newNote, setNewNote] = useState('')
     const [loading, setLoading] = useState(false)
-    const [loadingNotes, setLoadingNotes] = useState(false)
     const supabase = createClient()
 
     // Get data
     const getData = async () => {
-        setLoadingNotes(true)
         const { data } = await supabase.from('notes').select()
         setNotes(data)
-        setLoadingNotes(false)
+    }
+
+    // Delete data
+    const deleteData = async (id: string) => {
+        const { error } = await supabase.from('notes').delete().eq('id', id)
+        if (error) {
+            toast.error(error.message)
+            return
+        }
+        toast.success('Note deleted successfully')
     }
 
     // Handle submit
@@ -69,12 +74,30 @@ export default function Page() {
 
         // toast
         toast.success('Note added successfully')
-        getData()
     }
 
-    // Hanlde changes
+    // Handle changes
     useEffect(() => {
         getData()
+        // Subscribe to realtime channel
+        const channel = supabase
+            .channel('notes')
+            .on('postgres_changes', {
+                event: '*',
+                schema: 'public',
+                table: 'notes',
+            }, (payload) => {
+                console.log('Change received!', payload)
+                getData()
+            })
+            .subscribe((status) => {
+                console.log('Subscription status:', status)
+            })
+
+        // Cleanup subscription
+        return () => {
+            channel.unsubscribe()
+        }
     }, [])
 
     return (
@@ -92,27 +115,29 @@ export default function Page() {
             </form>
 
             {/* Notes section */}
-            {loadingNotes ? (
-                <Loading message="Loading notes..." />
-            ) : (
-                <div className='w-full max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-                    {notes?.map((note: Note): JSX.Element => (
-                        <Card key={note.id} className='bg-card rounded-xl shadow-lg flex flex-col justify-between overflow-hidden transition-all hover:shadow-xl'>
-                            <CardHeader className='pb-4'>
-                                <CardTitle className='text-lg font-semibold leading-snug'>{note.title}</CardTitle>
-                            </CardHeader>
-                            <CardFooter className='flex justify-end pt-2'>
-                                <Button variant='ghost' size='icon' className='mr-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive'>
-                                    <Trash className='h-4 w-4' />
-                                </Button>
-                                <Button variant='ghost' size='icon' className='text-muted-foreground hover:bg-primary/10 hover:text-primary'>
-                                    <Pencil className='h-4 w-4' />
-                                </Button>
-                            </CardFooter>
-                        </Card>
-                    ))}
-                </div>
-            )}
+            <div className='w-full max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
+                {notes?.map((note: Note): JSX.Element => (
+                    <Card key={note.id} className='bg-card rounded-xl shadow-lg flex flex-col justify-between overflow-hidden transition-all hover:shadow-xl'>
+                        <CardHeader className='pb-4'>
+                            <CardTitle className='text-lg font-semibold leading-snug'>{note.title}</CardTitle>
+                        </CardHeader>
+                        <CardFooter className='flex justify-end pt-2'>
+
+                            {/* delete button */}
+                            <Button variant='ghost' size='icon' className='mr-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive' 
+                            onClick={() => deleteData(note.id)}>
+                                <Trash className='h-4 w-4' />
+                            </Button>
+
+                            {/* edit button */}
+                            <Button variant='ghost' size='icon' className='text-muted-foreground hover:bg-primary/10 hover:text-primary' 
+                            onClick={() => toast.warning('edit the data here')} >
+                                <Pencil className='h-4 w-4' />
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                ))}
+            </div>
         </div >
     )
 }

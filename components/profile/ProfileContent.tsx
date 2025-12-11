@@ -122,7 +122,7 @@ export default function ProfilePage() {
 
     // Render return
     return (
-        <div className="min-h-screen bg-background p-8">
+        <div className="min-h-screen py-10">
             <div className="max-w-5xl mx-auto px-5">
                 {/* Header section */}
                 <h1 className='text-3xl font-semibold tracking-tight mb-2'>User Profile</h1>
