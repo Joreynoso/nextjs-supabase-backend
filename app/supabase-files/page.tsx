@@ -7,6 +7,8 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import FileUpload from '@/components/supabase-files/upload-file'
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { Camera } from 'lucide-react'
 
 export default function SupabaseFiles() {
 
@@ -86,6 +88,12 @@ export default function SupabaseFiles() {
         fetchFiles();
     }
 
+    // Cancel selection
+    function cancelSelection() {
+        console.log('Cancel selection', file);
+        setFile(null);
+    }
+
     // useEffect
     useEffect(() => {
         fetchFiles()
@@ -99,22 +107,52 @@ export default function SupabaseFiles() {
             <p className='text-muted-foreground text-base mb-8'>In this section, you can manage your files stored in Supabase.</p>
 
             {/* Upload section */}
-            <div className='mb-8 w-full bg-card p-4 rounded-lg'>
-                
+            <div className='mb-8 w-full bg-card p-4 rounded-lg flex justify-center items-center'>
+                <div className='w-full border-dashed border-2 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2 rounded-lg min-h-[100px] p-10'>
+                    <Input
+                        id="picture"
+                        type="file"
+                        onChange={(e) => setFile(e.target.files?.[0] || null)}
+                        className='w-full border-none focus-visible:ring-0'
+                        placeholder='Select a file'
+                    />
+                    <div className="flex gap-2 w-full md:w-auto mt-4 md:mt-0">
+                        <Button variant="outline" onClick={cancelSelection} className='flex-1 md:flex-none px-4 py-2'>Cancel</Button>
+                        <Button onClick={uploadFile} className='flex-1 md:flex-none px-4 py-2'>Upload File</Button>
+                    </div>
+                </div>
             </div>
 
             {/* list of files */}
+            {/* If exist files and loading is false */}
             {loading ? (
                 <div className='flex items-center justify-center h-full'>
                     <Loading message='Loading files...' />
                 </div>
             ) : (
-                <div className='flex flex-col gap-2'>
-                    {files.map((file: any) => ( 
-                        <div key={file.id} className='flex items-center gap-2'>
-                            <Image src={getPublicUrl(file.path)} width={100} height={100} alt={file.name} />
-                            <p>{file.name}</p>
-                        </div>
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+                    {files.map((file: any) => (
+                        <Card key={file.id} className='flex flex-col gap-2'>
+                            <CardHeader>{file.name}</CardHeader>
+                            <CardContent>
+                                {/* <Image
+                                    src='https://placehold.co/600x400'
+                                    alt={file.name}
+                                    width={200}
+                                    height={200}
+                                    className='w-full h-auto object-cover bg-card rounded-lg'
+                                    unoptimized
+                                    loading="eager"
+                                /> */}
+                                <div className='bg-background w-full h-auto object-cover rounded-lg min-h-[200px] flex justify-center items-center'>
+                                    <Camera className='w-8 h-8 text-muted-foreground' />
+                                </div>
+                            </CardContent>  
+                            <CardFooter className='flex items-center justify-end gap-2'>
+                                <Button size="sm" onClick={() => deleteFile(file.path)} className='mt-2 px-4 py-2'>Delete</Button>
+                                <Button size="sm" className='mt-2 px-4 py-2'>Download</Button>
+                            </CardFooter>
+                        </Card>
                     ))}
                 </div>
             )}

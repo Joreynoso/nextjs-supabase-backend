@@ -34,7 +34,6 @@ export function AuthButton() {
     <div className="flex gap-3">
       <Link href="/profile" className='h-8 w-8 ring-border'>
         <Avatar className="h-8 w-8 ring-border">
-          <AvatarImage src={user.email} />
           <AvatarFallback>{user.email?.[0].toUpperCase()}</AvatarFallback>
         </Avatar>
       </Link>
