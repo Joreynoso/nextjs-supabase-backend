@@ -16,3 +16,8 @@ export function getInitials(email: string) {
   const name = email.split("@")[0];
   return name.charAt(0).toUpperCase();
 }
+
+// Función para convertir bytes a KB
+export function bytesToKB(bytes: number) {
+  return (bytes / 1024).toFixed(2);
+}

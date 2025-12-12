@@ -7,7 +7,9 @@ import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
-import { Camera } from 'lucide-react'
+import { Camera, File } from 'lucide-react'
+import Link from 'next/link'
+import { bytesToKB } from '@/lib/utils'
 
 export default function SupabaseFiles() {
 
@@ -33,6 +35,7 @@ export default function SupabaseFiles() {
             if (error) throw error
             const filteredData = data.filter((file) => file.name !== '.emptyFolderPlaceholder')
             setFiles(filteredData || [])
+            console.log('files', filteredData)
         } catch (error) {
             console.log('error', error as Error)
             toast.error('Error loading files')
@@ -72,6 +75,8 @@ export default function SupabaseFiles() {
         setFile(null);
         // Refresh files list
         fetchFiles();
+        setLoading(false);
+        setFile(null);
     }
 
     // Delete a file
@@ -94,7 +99,6 @@ export default function SupabaseFiles() {
 
     // Cancel selection
     function cancelSelection() {
-        console.log('Cancel selection', file);
         setFile(null);
     }
 
@@ -128,29 +132,47 @@ export default function SupabaseFiles() {
                 </div>
             </div>
 
-            {/* list of files */}
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-                {files.map((file: any) => (
-                    <Card key={file.id} className='flex flex-col gap-2'>
-                        <CardHeader>{file.name}</CardHeader>
-                        <CardContent>
-                            <Image
-                                src={getPublicUrl(file.name)}
-                                alt={file.name}
-                                width={200}
-                                height={200}
-                                className='w-full h-auto object-cover bg-card rounded-lg'
-                                unoptimized
-                                loading="eager"
-                            />
-                        </CardContent>
-                        <CardFooter className='flex items-center justify-end gap-2'>
-                            <Button size="sm" onClick={() => deleteFile(file.name)} className='mt-2 px-4 py-2'>{loading ? 'Deleting...' : 'Delete'}</Button>
-                            <Button size="sm" className='mt-2 px-4 py-2'>Download</Button>
-                        </CardFooter>
-                    </Card>
-                ))}
-            </div>
+            {/* Bucket section */}
+            <h2 className='text-2xl font-semibold tracking-tight mb-2'>Bucket: {bucket}</h2>
+            <p className='text-muted-foreground text-base mb-8'>Files current in bucket: {files.length}</p>
+
+            {files.length === 0 ? (
+                <div className='bg-card w-full max-w-5xl min-h-[200px] flex flex-col p-3 px-5 text-sm mx-auto py-10 justify-center items-center rounded-lg'>
+                    <File className='w-8 h-8 text-muted-foreground mb-4' />
+                    <p className='text-muted-foreground text-base'>No files found in bucket</p>
+                </div>
+            ) : (
+                <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4'>
+                    {files.map((file: any) => (
+                        <Card key={file.id} className='flex flex-col h-[320px]'> {/* Fixed height for the card */}
+                            <CardHeader className='pb-4'>
+                                <h3 className='text-sm font-semibold truncate'>{file.name}</h3> {/* Truncate long names */}
+                                <p className='text-xs text-muted-foreground'>File size: {bytesToKB(file.metadata.size)} KB</p>
+                            </CardHeader>
+                            <CardContent className='flex-grow flex items-center justify-center p-0 px-6 h-[160px]'> {/* Fixed height for image container */}
+                                <Image
+                                    src={getPublicUrl(file.name)}
+                                    alt={file.name}
+                                    width={200}
+                                    height={160} // Fixed height for the image
+                                    className='w-full h-full object-cover rounded-lg' // Image fills its fixed height container
+                                    unoptimized
+                                    loading="eager"
+                                />
+                            </CardContent>
+                            <CardFooter className='w-full flex items-center gap-2 pt-4 mt-auto'> {/* Push footer to bottom */}
+                                <Button variant={'outline'} size="sm" className='px-4 py-2 w-full'>
+                                    <Link href={`/supabase-files/${file.name}`} target="_blank" className='flex items-center gap-2'>
+                                        See
+                                    </Link>
+                                </Button>
+                                <Button variant={'outline'} size="sm" onClick={() => deleteFile(file.name)} disabled={loading} className='px-4 py-2 w-full'>Delete</Button>
+                            </CardFooter>
+                        </Card>
+                    ))}
+                </div>
+            )}
+
         </div>
     )
 }
