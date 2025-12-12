@@ -2,22 +2,22 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import Image from 'next/image'
-import Loading from '@/components/loading'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
-import { Camera, File } from 'lucide-react'
 import Link from 'next/link'
 import { bytesToKB } from '@/lib/utils'
+import { File } from 'lucide-react'
 
 export default function SupabaseFiles() {
 
     // Local states
-    const [files, setFiles] = useState<any[]>([])
+    const [files, setFiles] = useState<any[]>([])   
     const [file, setFile] = useState<File | null>(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
+    const [imageUrl, setImageUrl] = useState<string | null>(null)
 
     // Bucket from supabase
     const bucket = "images"
@@ -48,6 +48,7 @@ export default function SupabaseFiles() {
     // Get public url
     function getPublicUrl(path: string) {
         const { data } = supabase.storage.from(bucket).getPublicUrl(path)
+        console.log('data.publicUrl', data.publicUrl)
         return data.publicUrl
     }
 
@@ -162,7 +163,7 @@ export default function SupabaseFiles() {
                             </CardContent>
                             <CardFooter className='w-full flex items-center gap-2 pt-4 mt-auto'> {/* Push footer to bottom */}
                                 <Button variant={'outline'} size="sm" className='px-4 py-2 w-full'>
-                                    <Link href={`/supabase-files/${file.name}`} target="_blank" className='flex items-center gap-2'>
+                                    <Link href={`/supabase-files/${encodeURIComponent(file.name)}`} className='flex items-center gap-2'>
                                         See
                                     </Link>
                                 </Button>

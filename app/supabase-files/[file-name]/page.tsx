@@ -1,18 +1,16 @@
-'use client'
+// app/supabase-files/[file-name]/page.tsx
+import { Suspense } from 'react'
+import ImageDisplay from '@/components/supabase-files/ImageDisplay'
+import Loading from '@/components/loading'
 
-export default function SupabaseFile({ params }: { params: Promise<{ file_name: string }> }) {
-
-
+export default async function SupabaseFile({ params }: { params: Promise<{ 'file-name': string }> }) {
     return (
-        <div className='w-full max-w-5xl min-h-[calc(100vh-120px)] flex flex-col p-3 px-5 text-sm mx-auto py-10'>
-            <h1>Supabase File</h1>
-            {/* <Image
-                src={'https://storage.googleapis.com/' + bucket + '/' + file_name}
-                alt={file_name}
-                width={500}
-                height={500}
-                unoptimized
-            /> */}
-        </div>
+        <Suspense fallback={
+            <div className='w-full max-w-5xl min-h-[calc(100vh-120px)] flex items-center justify-center'>
+                <Loading message='Loading image...'/>
+            </div>
+        }>
+            <ImageDisplay params={params} />
+        </Suspense>
     )
-}   
+}
