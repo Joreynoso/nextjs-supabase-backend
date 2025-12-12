@@ -6,7 +6,6 @@ import Loading from '@/components/loading'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import FileUpload from '@/components/supabase-files/upload-file'
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Camera } from 'lucide-react'
 
@@ -32,7 +31,8 @@ export default function SupabaseFiles() {
         try {
             const { data, error } = await supabase.storage.from(bucket).list()
             if (error) throw error
-            setFiles(data || [])
+            const filteredData = data.filter((file) => file.name !== '.emptyFolderPlaceholder')
+            setFiles(filteredData || [])
         } catch (error) {
             console.log('error', error as Error)
             toast.error('Error loading files')
@@ -76,7 +76,10 @@ export default function SupabaseFiles() {
 
     // Delete a file
     async function deleteFile(path: string) {
+        console.log('1. entering deleteFile')
+        console.log('path', path)
         const { error } = await supabase.storage.from(bucket).remove([path]);
+        console.log('2. exiting deleteFile')
         if (error) {
             toast.error("Error to delete file");
             console.log(error);
@@ -84,6 +87,7 @@ export default function SupabaseFiles() {
         }
 
         toast.success("File deleted successfully");
+        console.log('3. exiting deleteFile')
         // Refresh files list
         fetchFiles();
     }
@@ -113,49 +117,40 @@ export default function SupabaseFiles() {
                         id="picture"
                         type="file"
                         onChange={(e) => setFile(e.target.files?.[0] || null)}
+                        disabled={loading}
                         className='w-full border-none focus-visible:ring-0'
                         placeholder='Select a file'
                     />
                     <div className="flex gap-2 w-full md:w-auto mt-4 md:mt-0">
-                        <Button variant="outline" onClick={cancelSelection} className='flex-1 md:flex-none px-4 py-2'>Cancel</Button>
-                        <Button onClick={uploadFile} className='flex-1 md:flex-none px-4 py-2'>Upload File</Button>
+                        <Button variant="outline" onClick={cancelSelection} disabled={loading} className='flex-1 md:flex-none px-4 py-2'>Cancel</Button>
+                        <Button disabled={loading} onClick={uploadFile} className='flex-1 md:flex-none px-4 py-2'>Upload File</Button>
                     </div>
                 </div>
             </div>
 
             {/* list of files */}
-            {/* If exist files and loading is false */}
-            {loading ? (
-                <div className='flex items-center justify-center h-full'>
-                    <Loading message='Loading files...' />
-                </div>
-            ) : (
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-                    {files.map((file: any) => (
-                        <Card key={file.id} className='flex flex-col gap-2'>
-                            <CardHeader>{file.name}</CardHeader>
-                            <CardContent>
-                                {/* <Image
-                                    src='https://placehold.co/600x400'
-                                    alt={file.name}
-                                    width={200}
-                                    height={200}
-                                    className='w-full h-auto object-cover bg-card rounded-lg'
-                                    unoptimized
-                                    loading="eager"
-                                /> */}
-                                <div className='bg-background w-full h-auto object-cover rounded-lg min-h-[200px] flex justify-center items-center'>
-                                    <Camera className='w-8 h-8 text-muted-foreground' />
-                                </div>
-                            </CardContent>  
-                            <CardFooter className='flex items-center justify-end gap-2'>
-                                <Button size="sm" onClick={() => deleteFile(file.path)} className='mt-2 px-4 py-2'>Delete</Button>
-                                <Button size="sm" className='mt-2 px-4 py-2'>Download</Button>
-                            </CardFooter>
-                        </Card>
-                    ))}
-                </div>
-            )}
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+                {files.map((file: any) => (
+                    <Card key={file.id} className='flex flex-col gap-2'>
+                        <CardHeader>{file.name}</CardHeader>
+                        <CardContent>
+                            <Image
+                                src={getPublicUrl(file.name)}
+                                alt={file.name}
+                                width={200}
+                                height={200}
+                                className='w-full h-auto object-cover bg-card rounded-lg'
+                                unoptimized
+                                loading="eager"
+                            />
+                        </CardContent>
+                        <CardFooter className='flex items-center justify-end gap-2'>
+                            <Button size="sm" onClick={() => deleteFile(file.name)} className='mt-2 px-4 py-2'>{loading ? 'Deleting...' : 'Delete'}</Button>
+                            <Button size="sm" className='mt-2 px-4 py-2'>Download</Button>
+                        </CardFooter>
+                    </Card>
+                ))}
+            </div>
         </div>
     )
 }
